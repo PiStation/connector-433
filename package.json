@@ -1,0 +1,26 @@
+{
+  "name": "pistation-connector-433",
+  "version": "1.0.0",
+  "description": "433 / 434 MHz connector library for PiStation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PiStation/connector-433.git"
+  },
+  "keywords": [
+    "433",
+    "434",
+    "pistation",
+    "domotica",
+    "connector"
+  ],
+  "author": "Rob Quist",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PiStation/connector-433/issues"
+  },
+  "homepage": "https://github.com/PiStation/connector-433#readme"
+}
