@@ -1,3 +1,7 @@
 node_modules
 build/
 .idea
+wiringpi/
+bin/src/433connector
+bin/src/433rgb
+install.log
