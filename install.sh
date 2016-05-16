@@ -12,7 +12,7 @@ check_make_ok() {
     fi
     echo "Please check install.log and fix any problems. If you're still stuck,"
     echo "then please open a new issue then post all the output and as many details as you can to"
-    echo "  https://github.com/eugeneware/wiring-pi/issues"
+    echo "  https://github.com/PiStation/connector-433/issues"
     echo "================================================================================"
     echo ""
     if [ $2 == 1 ]; then
@@ -29,7 +29,7 @@ check_git_clone() {
     echo "FATAL: Cloning libWiringPi failed."
     echo "Please check install.log and fix any problems. If you're still stuck,"
     echo "then please open a new issue then post all the output and as many details as you can to"
-    echo "  https://github.com/eugeneware/wiring-pi/issues"
+    echo "  https://github.com/PiStation/connector-433/issues"
     echo "================================================================================"
     echo ""
     exit 1
