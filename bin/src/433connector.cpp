@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
         cout << "Disable unit " << unit << " at address " << address << " over pin " << pinout << " repeating " << repeat << "times. \r\n";
         Transmitter.sendUnit(unit, false);
     } else {
-        cout << "Send dim level " << onoff << " to unit " << unit << " at address " << address << " over pin " << pinout << " repeating " << repeat << "times. \r\n";
+        cout << "Send dim level " << onoff << " to unit " << unit << " at address " << address << " over pin " << pinout << " repeating " << repeat << " times. \r\n";
         Transmitter.sendDim(unit, atoi(onoff));
     }
 
