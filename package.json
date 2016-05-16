@@ -24,6 +24,8 @@
     "url": "https://github.com/PiStation/connector-433/issues"
   },
   "homepage": "https://github.com/PiStation/connector-433#readme",
-  "dependencies": {},
+  "dependencies": {
+    "sprintf": "^0.1.5"
+  },
   "devDependencies": {}
 }
