@@ -24,7 +24,5 @@
   },
   "homepage": "https://github.com/PiStation/connector-433#readme",
   "dependencies": {},
-  "devDependencies": {
-    "node-gyp": "0.8.x"
-  }
+  "devDependencies": {}
 }
