@@ -36,10 +36,10 @@ module.exports.getConfiguration = function () {
  * Enable a KaKu device
  * @param address
  * @param unit
- * @param repeat [optional - uses config if not set]
+ * @param callback
  */
-module.exports.enableKaku = function (address, unit, repeat) {
-    messageQueue.push(new Message(address, unit, 'on', repeat));
+module.exports.enableKaku = function (address, unit, callback) {
+    messageQueue.push(new Message(address, unit, 'on', callback));
     runQueue();
 };
 
@@ -47,12 +47,30 @@ module.exports.enableKaku = function (address, unit, repeat) {
  * Disable a KaKu device
  * @param address
  * @param unit
- * @param repeat [optional - uses config if not set]
+ * @param callback
  */
-module.exports.disableKaku = function (address, unit, repeat) {
-    messageQueue.push(new Message(address, unit, 'off', repeat));
+module.exports.disableKaku = function (address, unit, callback) {
+    messageQueue.push(new Message(address, unit, 'off', callback));
     runQueue();
 };
+
+/**
+ * Dim a KaKu device
+ * @param address
+ * @param unit
+ * @param dim
+ * @param callback
+ */
+module.exports.dimKaku = function (address, unit, dim, callback) {
+    dim = parseFloat(dim);
+    if (dim < 0 || dim > 15) {
+        console.error('Invalid argument for "dim". Should be >= 0 && <= 15');
+        return;
+    }
+    messageQueue.push(new Message(address, unit, dim, callback));
+    runQueue();
+};
+
 
 function runQueue() {
     if (messageQueue.length > 0 && runningMessages == false) {
@@ -72,14 +90,12 @@ function handleMessage(m, callback) {
         m.onoff
     );
 
-    console.log(cmd);
+    //console.log(cmd);
     exec(cmd, function (err, stdout, stderr) {
         if (err) {
             console.error(err);
-            callback();
-            return;
         }
-        console.log(stdout);
+        m.callback();
         callback();
     });
 }
