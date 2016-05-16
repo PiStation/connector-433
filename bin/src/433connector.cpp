@@ -32,12 +32,12 @@ int main(int argc, char* argv[])
     int repeat = atoi(argv[2]);
     int address = atoi(argv[3]);
     int unit = atoi(argv[4]);
-    int onoff = argv[5];
+    char* onoff = argv[5];
 
     // load wiringPi
     if(wiringPiSetup() == -1) {
-            printf("WiringPi setup failed. Maybe you haven't installed it yet?");
-            exit(1);
+        printf("WiringPi setup failed. Maybe you haven't installed it yet?");
+        exit(1);
     }
 
     // setup pin and make it low (otherwise transmitter will block other 433 mhz transmitters like remotes)
