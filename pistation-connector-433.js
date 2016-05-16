@@ -15,7 +15,7 @@ var configuration = {
 function Message(address, unit, onoff, callback) {
 
     this.repeat = configuration.repeat;
-    
+
     this.address = address;
     this.unit = unit;
     this.onoff = onoff;
@@ -93,7 +93,7 @@ function handleMessage(m, callback) {
         if (err) {
             console.error(err);
         }
-        if (isFunction(m.callback)) {
+        if (typeof(m.callback) == 'function') {
             m.callback();
         }
         callback();
