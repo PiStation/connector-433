@@ -4,4 +4,4 @@
 
 var connector = require( '../pistation-connector-433' );
 
-console.log(connector.testFunction());
+console.log(connector.enableKaku(20, 10));
