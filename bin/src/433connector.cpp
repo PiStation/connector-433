@@ -18,17 +18,13 @@
 using namespace std;
 
 void usage() {
-    cout << "Usage: (Kaku only at the moment). \r\n <binary> <pinout> <repeat> <address> <unit> <on|off|0-15 (dim)> ";
-}
-
-void setColorReal(int color, int value) {
-    NewRemoteTransmitter TsetColor(ADDR_COLOR_SELECT, PIN_OUT, 260, REPEAT);
+    cout << "Usage: (Kaku only at the moment).\r\n ./433connector <pinout> <repeat> <address> <unit> <on|off|0-15 (dim)>\r\n";
 }
 
 int main(int argc, char* argv[])
 {
     setbuf(stdout, NULL);
-    if (sizeof(argv) != 6) {
+    if (argc != 6) {
         usage();
         exit(1);
     }
@@ -36,7 +32,7 @@ int main(int argc, char* argv[])
     int repeat = atoi(argv[2]);
     int address = atoi(argv[3]);
     int unit = atoi(argv[4]);
-    int onoff = atoi(argv[5]);
+    int onoff = argv[5];
 
     // load wiringPi
     if(wiringPiSetup() == -1) {
@@ -48,20 +44,19 @@ int main(int argc, char* argv[])
     pinMode(pinout, OUTPUT);
     digitalWrite(pinout, LOW);
 
-    /*
-    if (strcmp(argv[1],"program") == 0) {
-        cout << "Switching to program " << argv[2];
-        //TselectProgram.sendUnit(atoi(argv[2]), true);
-    } else if (strcmp(argv[1],"color") == 0) {
-        cout << "Set color " << argv[2] << " to " << argv[3];
-        //setColorReal(atoi(argv[2]), atoi(argv[3]));
-    } else if (strcmp(argv[1],"config") == 0) {
-        cout << "Set config " << argv[2] << " to " << argv[3];
-        //TsetConfig.sendDim(atoi(argv[2]), atoi(argv[3]));
+    NewRemoteTransmitter Transmitter(address, pinout, 260, repeat);
+
+    if (strcmp(onoff,"on") == 0) {
+        cout << "Enable unit " << unit << " at address " << address << " over pin " << pinout << " repeating " << repeat << "times. \r\n";
+        Transmitter.sendUnit(unit, true);
+    } else if (strcmp(onoff,"off") == 0) {
+        cout << "Disable unit " << unit << " at address " << address << " over pin " << pinout << " repeating " << repeat << "times. \r\n";
+        Transmitter.sendUnit(unit, false);
     } else {
-        usage();
+        cout << "Send dim level " << onoff << " to unit " << unit << " at address " << address << " over pin " << pinout << " repeating " << repeat << "times. \r\n";
+        Transmitter.sendDim(unit, atoi(onoff));
     }
-    */
+
     return 0;
 }
 
