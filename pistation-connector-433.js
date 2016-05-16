@@ -12,16 +12,14 @@ var configuration = {
     repeat: 2
 };
 
-function Message(address, unit, onoff, repeat) {
+function Message(address, unit, onoff, callback) {
 
     this.repeat = configuration.repeat;
+    
     this.address = address;
     this.unit = unit;
     this.onoff = onoff;
-
-    if (repeat != undefined) {
-        this.repeat = repeat;
-    }
+    this.callback = callback;
 }
 
 module.exports.setConfiguration = function (config) {
@@ -95,7 +93,9 @@ function handleMessage(m, callback) {
         if (err) {
             console.error(err);
         }
-        m.callback();
+        if (isFunction(m.callback)) {
+            m.callback();
+        }
         callback();
     });
 }
