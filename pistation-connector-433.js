@@ -59,8 +59,6 @@ function runQueue() {
         runningMessages = true;
         var currentMessage = messageQueue.shift();
         handleMessage(currentMessage, function() {runningMessages = false; runQueue()});
-    } else {
-        runningMessages = false;
     }
 }
 
