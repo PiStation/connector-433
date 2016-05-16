@@ -2,7 +2,7 @@
   "name": "pistation-connector-433",
   "version": "1.0.0",
   "description": "433 / 434 MHz connector library for PiStation",
-  "main": "index.js",
+  "main": "pistation-connector-433.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -22,5 +22,9 @@
   "bugs": {
     "url": "https://github.com/PiStation/connector-433/issues"
   },
-  "homepage": "https://github.com/PiStation/connector-433#readme"
+  "homepage": "https://github.com/PiStation/connector-433#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "node-gyp": "0.8.x"
+  }
 }

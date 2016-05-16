@@ -1,8 +1,10 @@
 {
   "targets": [
     {
-      "target_name": "433rgb",
-      "sources": [ "src/433rgb.cpp" ]
+      "target_name": "433connector",
+      "sources": [ "src/433connector.cc" ],
+      "include_dirs": [ "/usr/local/include" ],
+      "ldflags": [ "-lwiringPi"]
     }
   ]
 }
