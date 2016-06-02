@@ -68,6 +68,7 @@ export class Connector433 extends Connector {
     }
 
     handleMessage(m:Message, callback:any): void {
+        console.log ('Execute message ' + cmd);
         var cmd = sprintf(
             'sudo %s %s %s %s %s %s',
             this.configuration.binary,
@@ -80,6 +81,7 @@ export class Connector433 extends Connector {
 
         //console.log(cmd);
         exec(cmd, function (err, stdout, stderr) {
+            console.log ('Executed!');
             if (err) {
                 console.error(err);
             }
