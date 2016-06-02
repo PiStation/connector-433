@@ -27,5 +27,8 @@
   "dependencies": {
     "sprintf": "^0.1.5"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "pistation": {
+    "version": "1.0.0"
+  }
 }
