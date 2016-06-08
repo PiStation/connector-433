@@ -26,7 +26,7 @@ export class Connector433 extends Connector {
     private runningMessages : boolean;
 
     constructor() {
-        super('44mhz connector');
+        super('connector-433');
 
         //Default config;
         this.configuration = new Configuration();
