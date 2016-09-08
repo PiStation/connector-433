@@ -15,7 +15,6 @@ var configuration = {
 function Message(address, unit, onoff, callback) {
 
     this.repeat = configuration.repeat;
-
     this.address = address;
     this.unit = unit;
     this.onoff = onoff;

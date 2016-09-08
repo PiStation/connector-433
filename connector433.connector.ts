@@ -22,7 +22,7 @@ class Configuration {
 
 export class Connector433 extends Connector {
     public configuration : Configuration;
-    private messageQueue : Array<Message>;
+    private messageQueue : Array<Message> = [];
     private runningMessages : boolean;
 
     constructor() {
@@ -33,11 +33,11 @@ export class Connector433 extends Connector {
         this.configuration.pinout = 15;
         this.configuration.repeat = 2;
         this.configuration.binary = './bin/433connector';
-
         this.runningMessages = false;
     }
 
-    enableKaku(address: string, unit: string, callback: any): void {
+    enableKaku(address: string = '0', unit: string = '0', callback: any): void {
+        console.log(this, this.messageQueue);
         this.messageQueue.push(new Message(address, unit, 'on', callback, this.configuration.repeat));
         this.runQueue();
     }
