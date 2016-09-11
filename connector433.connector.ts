@@ -39,7 +39,11 @@ export class Connector433 extends Connector {
         //test
         this.enableKaku('1','1');
 
-        this.enableKaku('2','1').subscribe((e)=>console.log('Now with observable update stream when message is send queue and update data from exec callback', e), (e)=>{console.log('erroorrrrrrrr', e)}, () => console.log('kaku message command completed!'));
+        this.enableKaku('2','1')
+            .subscribe(
+                (e)=>console.log('Now with observable update stream when message is send queue and update data from exec callback', e),
+                (e)=>{console.log('erroorrrrrrrr', e)},
+                () => console.log('kaku message command completed!'));
     }
 
     private addMessage(message : Message) {
@@ -48,7 +52,8 @@ export class Connector433 extends Connector {
         let messageExecuted =
             this.currentMessage
                 .filter(current => current === message)
-                .flatMap((message) => this.handleMessage(message))
+                .first()
+                .flatMap((message) => this.handleMessage(message).retry(3))
                 .do(() => this.runningMessages = false)
                 .do(()=>this.runQueue());
 
@@ -59,7 +64,6 @@ export class Connector433 extends Connector {
     };
 
     enableKaku(address: string = '0', unit: string = '0', callback?: any) {
-        console.log(this, this.messageQueue);
         var message = new Message(address, unit, 'on', callback, this.configuration.repeat);
         let messageComplete = this.addMessage(message);
 
@@ -93,13 +97,15 @@ export class Connector433 extends Connector {
 
 
     handleMessage(m:Message) {
-        return Rx.Observable.timer(1000);
+        //return Rx.Observable.timer(1000);
 
-        //let command = `echo "${this.configuration.pinout}" > test.bak`;
-        //let executeCommand: (command : string) => Rx.Observable<any> = Rx.Observable.bindNodeCallback(exec);
-        //
-        //let commandExecuted = executeCommand(command);
-        //
-        //return commandExecuted;
+        //let command = `echo "${m.address} ${m.unit}" > test.bak`;
+        let command = `${this.configuration.binary} ${this.configuration.pinout} ${m.repeat} ${m.address} ${m.unit} ${m.onoff}`;
+
+        let executeCommand: (command : string) => Rx.Observable<any> = Rx.Observable.bindNodeCallback(exec);
+
+        let commandExecuted = executeCommand(command);
+
+        return commandExecuted;
     }
 }
