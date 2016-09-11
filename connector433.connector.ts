@@ -1,8 +1,8 @@
 import * as PiStation from "../../node_modules/pistation-definitions/PiStation.ts";
 import {Connector} from "../../app/connector";
-let exec = require('child_process').exec;
-let sprintf = require('sprintf');
-
+import * as Rx from 'rxjs/rx';
+import * as RxNode from 'rx-node';
+const exec = require('child_process').exec;
 class Message {
     constructor(
         public address: string,
@@ -10,7 +10,6 @@ class Message {
         public onoff: string,
         public callback: any,
         public repeat:number) {
-        console.log('Message created: addr %s unit %s onoffdim %s repeated %s times');
     }
 }
 
@@ -23,7 +22,9 @@ class Configuration {
 export class Connector433 extends Connector {
     public configuration : Configuration;
     private messageQueue : Array<Message> = [];
+    private currentMessage = new Rx.Subject<Message>();
     private runningMessages : boolean;
+
 
     constructor() {
         super('connector-433');
@@ -34,17 +35,42 @@ export class Connector433 extends Connector {
         this.configuration.repeat = 2;
         this.configuration.binary = './bin/433connector';
         this.runningMessages = false;
+
+        //test
+        this.enableKaku('1','1');
+
+        this.enableKaku('2','1').subscribe((e)=>console.log('Now with observable update stream when message is send queue and update data from exec callback', e), (e)=>{console.log('erroorrrrrrrr', e)}, () => console.log('kaku message command completed!'));
     }
 
-    enableKaku(address: string = '0', unit: string = '0', callback: any): void {
+    private addMessage(message : Message) {
+        this.messageQueue.push(message);
+
+        let messageExecuted =
+            this.currentMessage
+                .filter(current => current === message)
+                .flatMap((message) => this.handleMessage(message))
+                .do(() => this.runningMessages = false)
+                .do(()=>this.runQueue());
+
+        messageExecuted.subscribe(
+            (e) => console.log(`Kaku message send, address: ${message.address}, unit: ${message.unit}`),
+            (error) => console.log('Kaku message failed', error));
+        return messageExecuted;
+    };
+
+    enableKaku(address: string = '0', unit: string = '0', callback?: any) {
         console.log(this, this.messageQueue);
-        this.messageQueue.push(new Message(address, unit, 'on', callback, this.configuration.repeat));
+        var message = new Message(address, unit, 'on', callback, this.configuration.repeat);
+        let messageComplete = this.addMessage(message);
+
         this.runQueue();
+        return messageComplete;
     }
+
 
     disableKaku(address: string, unit: string, callback: any): void {
-        this.messageQueue.push(new Message(address, unit, 'off', callback, this.configuration.repeat));
-        this.runQueue();
+        var message = new Message(address, unit, 'off', callback, this.configuration.repeat);
+        this.addMessage(message);
     }
 
     dimKaku(address: string, unit: string, dim:number, callback: any): void {
@@ -53,42 +79,27 @@ export class Connector433 extends Connector {
             return;
         }
         this.messageQueue.push(new Message(address, unit, String(dim), callback, this.configuration.repeat));
-        this.runQueue();
+        //this.runQueue();
     }
 
     runQueue():void {
         if (this.messageQueue.length > 0 && this.runningMessages == false) {
             this.runningMessages = true;
-            var currentMessage = this.messageQueue.shift();
-            this.handleMessage(currentMessage, function () {
-                this.runningMessages = false;
-                this.runQueue()
-            });
+
+            this.currentMessage
+                .next(this.messageQueue.shift());
         }
     }
 
-    handleMessage(m:Message, callback:any): void {
-        console.log ('Execute message ' + cmd);
-        var cmd = sprintf(
-            'sudo %s %s %s %s %s %s',
-            this.configuration.binary,
-            this.configuration.pinout,
-            m.repeat,
-            m.address,
-            m.unit,
-            m.onoff
-        );
 
-        //console.log(cmd);
-        exec(cmd, function (err, stdout, stderr) {
-            console.log ('Executed!');
-            if (err) {
-                console.error(err);
-            }
-            if (typeof(m.callback) == 'function') {
-                m.callback();
-            }
-            callback();
-        });
+    handleMessage(m:Message) {
+        return Rx.Observable.timer(1000);
+
+        //let command = `echo "${this.configuration.pinout}" > test.bak`;
+        //let executeCommand: (command : string) => Rx.Observable<any> = Rx.Observable.bindNodeCallback(exec);
+        //
+        //let commandExecuted = executeCommand(command);
+        //
+        //return commandExecuted;
     }
 }
