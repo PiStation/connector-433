@@ -1,7 +1,5 @@
-import * as PiStation from "../../node_modules/pistation-definitions/PiStation.ts";
 import {Connector} from "../../app/connector";
-import * as Rx from 'rxjs/rx';
-import * as RxNode from 'rx-node';
+import * as Rx from 'rxjs/Rx';
 const exec = require('child_process').exec;
 class Message {
     constructor(
