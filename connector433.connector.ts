@@ -42,13 +42,17 @@ export class Connector433 extends Connector {
             this.currentMessage
                 .filter(current => current === message)
                 .first()
-                .flatMap((message) => this.handleMessage(message).retry(3))
-                .do(() => this.runningMessages = false)
-                .do(()=>this.runQueue());
+                .flatMap((message) => this.handleMessage(message))
 
         messageExecuted.subscribe(
-            (e) => console.log(`Kaku message send, address: ${message.address}, unit: ${message.unit}`),
+            (output) => {
+                this.runningMessages = false;
+                this.runQueue();
+
+                console.log(`Kaku message send, address: ${message.address}, unit: ${message.unit}`)
+            },
             (error) => console.log('Kaku message failed', error));
+
         return messageExecuted;
     };
 
@@ -77,8 +81,11 @@ export class Connector433 extends Connector {
         if (this.messageQueue.length > 0 && this.runningMessages == false) {
             this.runningMessages = true;
 
-            this.currentMessage
-                .next(this.messageQueue.shift());
+            //add starting queue after current executing stack
+            setTimeout(()=>{
+                this.currentMessage
+                    .next(this.messageQueue.shift());
+            }, 0)
         }
     }
 
