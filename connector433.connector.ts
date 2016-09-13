@@ -31,17 +31,8 @@ export class Connector433 extends Connector {
         this.configuration = new Configuration();
         this.configuration.pinout = 15;
         this.configuration.repeat = 2;
-        this.configuration.binary = './bin/433connector';
+        this.configuration.binary = './connectors/connector-433/bin/433connector'; //Based on API root... @todo?
         this.runningMessages = false;
-
-        //test
-        this.enableKaku('1','1');
-
-        this.enableKaku('2','1')
-            .subscribe(
-                (e)=>console.log('Now with observable update stream when message is send queue and update data from exec callback', e),
-                (e)=>{console.log('erroorrrrrrrr', e)},
-                () => console.log('kaku message command completed!'));
     }
 
     private addMessage(message : Message) {
@@ -68,8 +59,7 @@ export class Connector433 extends Connector {
         this.runQueue();
         return messageComplete;
     }
-
-
+    
     disableKaku(address: string, unit: string, callback: any): void {
         var message = new Message(address, unit, 'off', callback, this.configuration.repeat);
         this.addMessage(message);
@@ -81,7 +71,6 @@ export class Connector433 extends Connector {
             return;
         }
         this.messageQueue.push(new Message(address, unit, String(dim), callback, this.configuration.repeat));
-        //this.runQueue();
     }
 
     runQueue():void {
@@ -93,15 +82,9 @@ export class Connector433 extends Connector {
         }
     }
 
-
     handleMessage(m:Message) {
-        //return Rx.Observable.timer(1000);
-
-        //let command = `echo "${m.address} ${m.unit}" > test.bak`;
         let command = `${this.configuration.binary} ${this.configuration.pinout} ${m.repeat} ${m.address} ${m.unit} ${m.onoff}`;
-
         let executeCommand: (command : string) => Rx.Observable<any> = Rx.Observable.bindNodeCallback(exec);
-
         let commandExecuted = executeCommand(command);
 
         return commandExecuted;
