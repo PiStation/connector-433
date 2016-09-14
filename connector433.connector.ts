@@ -43,6 +43,8 @@ export class Connector433 extends Connector {
                 .filter(current => current === message)
                 .first()
                 .flatMap((message) => this.handleMessage(message))
+                .share() //handleMessage returns cold observable, so we need to make it hot to prevent multiple execution by every subscriber
+                .first();
 
         messageExecuted.subscribe(
             (output) => {
@@ -90,6 +92,7 @@ export class Connector433 extends Connector {
     }
 
     handleMessage(m:Message) {
+        //let command = `echo "${m.address} ${m.unit}" > test.bak && cat test.bak && sleep 5`;
         let command = `${this.configuration.binary} ${this.configuration.pinout} ${m.repeat} ${m.address} ${m.unit} ${m.onoff}`;
         let executeCommand: (command : string) => Rx.Observable<any> = Rx.Observable.bindNodeCallback(exec);
         let commandExecuted = executeCommand(command);
