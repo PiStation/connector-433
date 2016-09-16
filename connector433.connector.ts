@@ -66,7 +66,10 @@ export class Connector433 extends Connector {
     
     disableKaku(address: string, unit: string, callback: any): void {
         var message = new Message(address, unit, 'off', callback, this.configuration.repeat);
-        this.addMessage(message);
+        let messageComplete = this.addMessage(message);
+
+        this.runQueue();
+        return messageComplete;
     }
 
     dimKaku(address: string, unit: string, dim:number, callback: any): void {
@@ -74,7 +77,11 @@ export class Connector433 extends Connector {
             console.error('Invalid argument for "dim". Should be >= 0 && <= 15');
             return;
         }
-        this.messageQueue.push(new Message(address, unit, String(dim), callback, this.configuration.repeat));
+        var message = new Message(address, unit,  String(dim), callback, this.configuration.repeat);
+        let messageComplete = this.addMessage(message);
+
+        this.runQueue();
+        return messageComplete;
     }
 
     runQueue():void {
