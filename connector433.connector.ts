@@ -67,7 +67,7 @@ export class Connector433 extends Connector {
         return messageComplete;
     }
     
-    disableKaku(address: string, unit: string, callback: any): void {
+    disableKaku(address: string = '0', unit: string = '0', callback?: any): void {
         var message = new Message(address, unit, 'off', callback, this.configuration.repeat);
         let messageComplete = this.addMessage(message);
 
@@ -75,7 +75,7 @@ export class Connector433 extends Connector {
         return messageComplete;
     }
 
-    dimKaku(address: string, unit: string, dim:number, callback: any): void {
+    dimKaku(address: string = '0', unit: string = '0', dim:number, callback?: any): void {
         if (dim < 0 || dim > 15) {
             console.error('Invalid argument for "dim". Should be >= 0 && <= 15');
             return;
@@ -100,7 +100,7 @@ export class Connector433 extends Connector {
     }
 
     handleMessage(m:Message) {
-        //let command = `echo "${m.address} ${m.unit}" > test.bak && cat test.bak && sleep 5`; // Debug 
+        //let command = `echo "${m.address} ${m.unit}" > test.bak && cat test.bak && sleep 5`; // Debug
         let command = `${this.configuration.binary} ${this.configuration.pinout} ${m.repeat} ${m.address} ${m.unit} ${m.onoff}`;
         let executeCommand: (command : string) => Rx.Observable<any> = Rx.Observable.bindNodeCallback(exec);
         let commandExecuted = executeCommand(command);
